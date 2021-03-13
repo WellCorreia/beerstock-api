@@ -31,5 +31,5 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 public class BeerControllerTest {
-    
+
 }
