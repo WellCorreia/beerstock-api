@@ -121,4 +121,24 @@ public class BeerServiceTest {
         verify(beerRepository, times(1)).deleteById(beerDTO.getId());
     }
 
+    @Test
+    void IncrementIsCalledThenIncrementBeerStock() throws BeerNotFoundException, BeerStockExceededException {
+        //given
+        BeerDTO beerDTO = BeerDTOBuilder.builder().build().toBeerDTO();
+        Beer expectedBeer = beerMapper.toModel(beerDTO);
+
+        //when
+        Mockito.when(beerRepository.findById(beerDTO.getId())).thenReturn(Optional.of(expectedBeer));
+        Mockito.when(beerRepository.save(expectedBeer)).thenReturn(expectedBeer);
+
+
+        int quantityToIncrement = 10;
+        int expectedquantityAfterIncrement = expectedBeer.getQuantity() + quantityToIncrement;
+
+        BeerDTO incrementedBeerDTO = beerService.increment(beerDTO.getId(), quantityToIncrement);
+
+        MatcherAssert.assertThat(expectedquantityAfterIncrement, equalTo(incrementedBeerDTO.getQuantity()));
+        MatcherAssert.assertThat(expectedquantityAfterIncrement, lessThan(beerDTO.getMax()));
+    }
+
 }
